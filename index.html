@@ -1,0 +1,299 @@
+<title>AI 역량 신호 채용 실험</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: single-column stack of glass cards on a deep-navy gradient, matching the blog's existing infographics. */
+:root{
+  --bg:#0b1030;--bg2:#17205a;--card:rgba(255,255,255,.06);--card2:rgba(255,255,255,.10);--line:rgba(255,255,255,.15);
+  --fg:#eef1ff;--fg2:#b6bee3;--muted:#8d97c7;--accent:#5cc8ff;--on-accent:#0b1030;
+  --s1:#30a0d0;--s2:#d27620;--s3:#9a7df0;
+  --good:#3ddc97;--warn:#ffd166;--bad:#ff8a8a;--track:rgba(255,255,255,.10);
+  --f-body:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+    --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+    --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+    --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+  --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+  --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+  --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(165deg,var(--bg) 0%,var(--bg2) 100%);color:var(--fg);font:400 15px/1.65 var(--f-body);word-break:keep-all;overflow-wrap:break-word}
+.wrap{max-width:880px;margin-inline:auto;padding-inline:16px;padding-block:28px 44px;display:grid;gap:18px}
+header{display:grid;gap:10px;text-align:center;padding-block:8px 4px}
+h1{margin:0;font-size:clamp(26px,5.6vw,40px);line-height:1.2;font-weight:900;color:var(--accent);text-wrap:balance}
+.sub{margin:0;color:var(--fg2);font-size:14px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px;min-width:0}
+h2{margin:0;font-size:18px;line-height:1.35;font-weight:700;display:flex;gap:10px;align-items:center}
+h3{margin:0;font-size:15px;font-weight:700}
+p{margin:0}
+.ico{font-size:20px;line-height:1}
+.lead{color:var(--fg2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--fg2)}
+.chip.warn{color:var(--warn);border-color:currentColor;background:transparent}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--track);border-radius:12px;justify-self:start}
+.seg button{font:inherit;font-size:13px;font-weight:500;color:var(--fg2);background:transparent;border:0;border-radius:9px;padding:7px 14px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:700}
+button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--fg2)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px}
+.ttl{font-size:13px;color:var(--muted)}
+/* bars */
+.bars{display:grid;gap:12px}
+.brow{display:grid;grid-template-columns:minmax(110px,190px) 1fr 72px;gap:6px 12px;align-items:center}
+.blabel{font-size:14px;color:var(--fg)}
+.btrack{height:14px;background:var(--track);border-radius:4px;display:flex;align-items:center}
+.bfill{height:100%;min-width:2px;border-radius:0 4px 4px 0;background:var(--c,var(--s1));transform-origin:left;animation:grow .6s ease-out both;cursor:default}
+.bval{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;font-size:14px}
+.bgroup{display:grid;gap:3px}
+.bgroup .brow{grid-template-columns:minmax(0,1fr) 72px}
+.gtitle{font-size:14px;font-weight:500;margin-bottom:2px}
+@keyframes grow{from{transform:scaleX(0)}}
+@media (max-width:540px){
+  .brow{grid-template-columns:1fr 64px}
+  .brow .blabel{grid-column:1/-1}
+}
+/* diverging */
+.drow{display:grid;grid-template-columns:minmax(110px,210px) 1fr 76px;gap:6px 12px;align-items:center}
+.dtrack{position:relative;height:14px;background:var(--track);border-radius:4px}
+.dtrack::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--muted)}
+.dfill{position:absolute;top:0;bottom:0;background:var(--c);animation:growc .6s ease-out both}
+.dfill.neg{right:50%;border-radius:4px 0 0 4px;transform-origin:right}
+.dfill.pos{left:50%;border-radius:0 4px 4px 0;transform-origin:left}
+@keyframes growc{from{transform:scaleX(0)}}
+@media (max-width:540px){.drow{grid-template-columns:1fr 70px}.drow .blabel{grid-column:1/-1}}
+/* tiles, notes, pills */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--card2);border-radius:12px;padding:14px;text-align:center;display:grid;gap:2px;min-width:0}
+.big{font-size:28px;font-weight:900;line-height:1.15;font-variant-numeric:tabular-nums}
+.cap{font-size:12.5px;color:var(--muted)}
+.note{font-size:13.5px;color:var(--fg2);background:var(--card2);border-radius:12px;padding:12px 14px}
+.pill{display:inline-flex;gap:5px;align-items:center;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;border:1px solid currentColor;white-space:nowrap}
+.pill.good{color:var(--good)}.pill.neutral{color:var(--muted)}.pill.warn{color:var(--warn)}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.step{background:var(--card2);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--fg2);display:grid;gap:4px;min-width:0}
+.step b{color:var(--fg);font-size:14px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.panel{background:var(--card2);border-radius:12px;padding:14px;display:grid;gap:8px;min-width:0}
+.panel ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px;color:var(--fg2)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:480px;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:10px;border-bottom:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:500;color:var(--muted);font-size:12.5px}
+tbody tr:hover td{background:var(--card2)}
+.list{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--card2);border-radius:12px;padding:10px 14px}
+.item span{font-size:13px;color:var(--fg2);grid-column:1/-1}
+.stack{display:flex;gap:2px;height:30px}
+.stack div{background:var(--c);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--on-accent);overflow:hidden;min-width:0;border-radius:4px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.slide{display:grid;gap:6px}
+.slide label{font-size:13px;color:var(--fg2);display:flex;justify-content:space-between}
+/* dot plot */
+.dp{display:grid;gap:12px}
+.dprow{display:grid;grid-template-columns:minmax(120px,210px) 1fr;gap:6px 12px;align-items:center}
+.dpt{position:relative;height:28px}
+.dpt::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--track);transform:translateY(-50%)}
+.dpg{position:absolute;top:0;bottom:0;width:1px;background:var(--line)}
+.dpg.base{background:var(--muted);width:2px}
+.dpd{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:var(--c,var(--s1));border:2px solid var(--card);transform:translate(-50%,-50%);cursor:default}
+.dpr{position:absolute;top:50%;height:10px;border-radius:5px;background:var(--c,var(--s1));transform:translateY(-50%);opacity:.9}
+.dpv{position:absolute;top:-2px;transform:translateX(-50%);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.axis{display:grid;grid-template-columns:minmax(120px,210px) 1fr;gap:12px}
+.axs{position:relative;height:18px;font-size:12px;color:var(--muted)}
+.axs span{position:absolute;transform:translateX(-50%);font-variant-numeric:tabular-nums}
+@media (max-width:540px){.dprow,.axis{grid-template-columns:1fr}.axis>div:first-child{display:none}}
+/* resume mock */
+.resumes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.resume{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:6px;font-size:13.5px;color:var(--fg2);min-width:0}
+.resume b{color:var(--fg);font-size:14.5px}
+.tag{display:inline-block;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:700;background:var(--s1);color:var(--on-accent);justify-self:start}
+.tag.none{background:var(--track);color:var(--muted)}
+.foot{text-align:center;color:var(--muted);font-size:12.5px;display:grid;gap:4px;padding-top:6px}
+.tip{position:fixed;z-index:30;pointer-events:none;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px 10px;border-radius:8px;font-size:12.5px;line-height:1.5;max-width:260px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+</style>
+<div class="wrap">
+<header>
+  <h1>AI 역량을 적은 이력서</h1>
+  <p class="sub">채용 담당자 1,725명의 가상 지원자 선택 실험 | Stephany, Teutloff & Leone (2026) · arXiv 프리프린트</p>
+  <div class="badges"><span class="chip warn">프리프린트 · 동료심사 학술지 게재 미확인</span></div>
+</header>
+
+<section class="card">
+  <h2><span class="ico">🔬</span>연구 개요</h2>
+  <p class="lead">채용 경험이 있는 응답자가 가상 지원자 두 명 중 면접에 초대할 한 명을 고르는 설문 실험으로, 이력서에 적힌 AI 역량 정보가 선택에 미치는 영향을 봅니다. 결과는 실제 면접 초대나 채용 건수가 아니라 실험 안의 선택입니다.</p>
+  <div class="chips">
+    <span class="chip">응답자 1,725명</span><span class="chip">이력서 쌍 22,195건 비교</span><span class="chip">1인당 10~15개 비교</span>
+    <span class="chip">Prolific · 2025.08–09</span><span class="chip">사무 보조 · 그래픽 디자이너 · 소프트웨어 엔지니어</span>
+  </div>
+  <p class="ttl">응답자 국가 구성 (부록 D 기준, 대표 표본 아님)</p>
+  <div class="stack" id="country" role="img" aria-label="영국 921명, 미국 729명, 독일 58명, 국가 무응답 17명"></div>
+  <div class="legend" id="country-leg"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">🧾</span>이력서 쌍을 직접 비교해 보기</h2>
+  <p class="lead">직무와 AI 역량 표기 방식을 바꿔 보세요. 응답자는 이런 두 장 중 한 명만 면접에 초대했습니다.</p>
+  <div class="seg" id="seg-job" role="group" aria-label="직무 선택">
+    <button type="button" data-v="office" aria-pressed="true">사무 보조</button><button type="button" data-v="design" aria-pressed="false">그래픽 디자이너</button><button type="button" data-v="swe" aria-pressed="false">소프트웨어 엔지니어</button>
+  </div>
+  <div class="seg" id="seg-cond" role="group" aria-label="AI 역량 표기 방식 선택">
+    <button type="button" data-v="none" aria-pressed="false">표기 없음</button><button type="button" data-v="self" aria-pressed="true">자기보고</button><button type="button" data-v="li" aria-pressed="false">LinkedIn Learning 인증</button><button type="button" data-v="uni" aria-pressed="false">대학 마이크로크리덴셜</button><button type="button" data-v="corp" aria-pressed="false">기술기업 인증</button>
+  </div>
+  <div class="resumes" id="resumes"></div>
+  <p class="note">처치는 문구 하나가 아니라 직무에 맞춘 역량 설명과 경력 서술을 묶은 정보입니다. 이력서 내용은 생성형 AI로 구성하고 경력과 직무 관련성의 일관성을 검토했습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">🎯</span>선택될 예측 확률</h2>
+  <div class="seg" id="seg-prob" role="group" aria-label="보기 선택">
+    <button type="button" data-v="all" aria-pressed="true">직무 합산</button><button type="button" data-v="swe" aria-pressed="false">소프트웨어 엔지니어</button><button type="button" data-v="office" aria-pressed="false">사무 보조</button><button type="button" data-v="design" aria-pressed="false">그래픽 디자이너</button>
+  </div>
+  <p class="ttl">불리한 연령·학력 조건이 없는 비교. 0.50은 두 지원자가 동등하게 선택되는 기준선</p>
+  <div class="axis" id="dp-axis"></div>
+  <div class="dp" id="dp"></div>
+  <p class="note" id="dp-note"></p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">🧮</span>「8~15퍼센트포인트」를 어떻게 읽을까</h2>
+  <p class="lead">논문은 AI 역량 신호가 선택 확률을 대략 8~15퍼센트포인트 높인다고 요약합니다. 기준선 50%에서 단순 계산한 예시입니다.</p>
+  <div class="seg" id="seg-pp" role="group" aria-label="해석 선택">
+    <button type="button" data-v="pp" aria-pressed="true">퍼센트포인트 (논문)</button><button type="button" data-v="rel" aria-pressed="false">상대 % (흔한 오해)</button>
+  </div>
+  <div class="bars" id="pp-bars"></div>
+  <p class="note" id="pp-note"></p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">👥</span>연령·학력 불리함과 인증</h2>
+  <div class="seg" id="seg-dis" role="group" aria-label="조건 선택">
+    <button type="button" data-v="age" aria-pressed="true">나이 많은 지원자</button><button type="button" data-v="edu" aria-pressed="false">낮은 학력의 사무 보조</button>
+  </div>
+  <div class="panel" id="dis-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">🧑‍💼</span>채용 담당자의 AI 사용</h2>
+  <div class="tiles">
+    <div class="tile"><span class="big">≈0.75</span><span class="cap">AI 사용이 많은 담당자가 AI 역량을 표시한 소프트웨어 엔지니어를 고를 예측 확률</span></div>
+  </div>
+  <p class="note">담당자의 사용 경험은 실험적으로 조작하지 않았습니다. 담당자에게 AI 교육을 제공하면 같은 변화가 생긴다는 인과효과와는 다르며, 경험이 많아서 역량의 효용을 더 잘 이해한 것인지 자기 선호를 투영한 것인지는 분리되지 않습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">🎨</span>그래픽 디자인 직무의 자유응답</h2>
+  <div class="bars" id="free"></div>
+  <p class="note">다른 두 직무보다 부정적 비중이 높고, 선택 효과도 약했습니다. 창작의 진정성 우려가 원인이라고 확정한 매개효과는 아닙니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">🔍</span>읽을 때 주의할 점</h2>
+  <div class="seg" id="seg-read" role="group" aria-label="보기 선택">
+    <button type="button" data-v="yes" aria-pressed="true">보여주는 것</button><button type="button" data-v="no" aria-pressed="false">보여주지 않는 것</button>
+  </div>
+  <div class="panel" id="read-panel" aria-live="polite"></div>
+</section>
+
+<footer class="foot">
+  <div>Stephany, F., Teutloff, O., & Leone, A. (2026). AI skills improve job prospects: Causal evidence from a hiring experiment (Version 2) [Preprint]. arXiv. https://doi.org/10.48550/arXiv.2601.13286</div>
+  <div>인포그래픽 제작: donghunc.kr | AI 활용 블로그</div>
+</footer>
+</div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tip=document.createElement('div');tip.className='tip';tip.hidden=true;document.body.appendChild(tip);
+function showTip(e,html){tip.innerHTML=html;tip.hidden=false;moveTip(e)}
+function moveTip(e){const r=tip.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=Math.max(8,innerWidth-r.width-8);if(y+r.height>innerHeight-8)y=Math.max(8,e.clientY-r.height-14);tip.style.left=x+'px';tip.style.top=y+'px'}
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(e,t.dataset.tip)});
+document.addEventListener('mousemove',e=>{if(!tip.hidden)moveTip(e)});
+document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tip.hidden=true});
+document.addEventListener('focusin',e=>{const t=e.target.closest('[data-tip]');if(t){const r=t.getBoundingClientRect();showTip({clientX:r.left,clientY:r.bottom},t.dataset.tip)}});
+document.addEventListener('focusout',()=>{tip.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')tip.hidden=true});
+/* segmented control: buttons carry data-v; first one starts pressed */
+function seg(id,cb){const el=document.getElementById(id);const bs=$$('button',el);
+  const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));cb(b.dataset.v)};
+  bs.forEach(b=>b.addEventListener('click',()=>set(b)));
+  const first=bs.find(b=>b.getAttribute('aria-pressed')==='true')||bs[0];set(first);}
+/* horizontal bars. rows: {l,v,max?,c?,t,show} */
+function bars(host,rows,max,fmt){host.innerHTML=rows.map(r=>{
+  const w=Math.max(0,Math.min(100,r.v/max*100));
+  return `<div class="brow"><div class="blabel">${r.l}</div><div class="btrack"><div class="bfill" tabindex="0" style="width:${w}%;--c:${r.c||'var(--s1)'}" data-tip="${esc(r.t||r.l)}" aria-label="${esc(r.l)} ${esc(r.show||fmt(r.v))}"></div></div><div class="bval">${r.show||fmt(r.v)}</div></div>`}).join('')}
+/* diverging bars centered on zero. rows: {l,v,c,t,show} */
+function dbars(host,rows,max){host.innerHTML=rows.map(r=>{
+  const w=Math.min(50,Math.abs(r.v)/max*50),cls=r.v<0?'neg':'pos';
+  return `<div class="drow"><div class="blabel">${r.l}</div><div class="dtrack"><div class="dfill ${cls}" tabindex="0" style="width:${w}%;--c:${r.c}" data-tip="${esc(r.t||r.l)}" aria-label="${esc(r.l)} ${esc(r.show)}"></div></div><div class="bval">${r.show}</div></div>`}).join('')}
+/* dot plot on [lo,hi]. rows: {l,pts:[{v,t,c?}]} or {l,range:[a,b],t} */
+function dotplot(host,axisHost,rows,lo,hi,ticks,base){
+  const p=v=>((v-lo)/(hi-lo)*100).toFixed(2)+'%';
+  const grid=ticks.map(t=>`<div class="dpg${t===base?' base':''}" style="left:${p(t)}"></div>`).join('');
+  axisHost.innerHTML=`<div></div><div class="axs">${ticks.map(t=>`<span style="left:${p(t)}">${t.toFixed(2)}</span>`).join('')}</div>`;
+  host.innerHTML=rows.map(r=>{
+    let m='';
+    if(r.range){m=`<div class="dpr" tabindex="0" style="left:${p(r.range[0])};width:calc(${p(r.range[1])} - ${p(r.range[0])});--c:${r.c||'var(--s1)'}" data-tip="${esc(r.t)}" aria-label="${esc(r.l)} ${esc(r.show)}"></div><div class="dpv" style="left:${p((r.range[0]+r.range[1])/2)};top:-16px">${r.show}</div>`}
+    else{m=r.pts.map(q=>`<div class="dpd" tabindex="0" style="left:${p(q.v)};--c:${q.c||'var(--s1)'}" data-tip="${esc(q.t)}" aria-label="${esc(r.l)} ${q.v.toFixed(2)}"></div><div class="dpv" style="left:${p(q.v)};top:-16px">≈${q.v.toFixed(2)}</div>`).join('')}
+    return `<div class="dprow"><div class="blabel">${r.l}</div><div class="dpt" style="margin-top:16px">${grid}${m}</div></div>`}).join('')}
+
+
+const P1='var(--s1)',P2='var(--s2)',P3='var(--s3)';
+/* country composition */
+(()=>{const d=[['영국',921,P1],['미국',729,P2],['독일',58,P3],['국가 무응답',17,'var(--muted)']],tot=1725;
+  $('#country').innerHTML=d.map(x=>`<div style="flex:${x[1]};--c:${x[2]}" data-tip="${x[0]} ${x[1]}명" tabindex="0">${x[1]>200?x[1]+'명':''}</div>`).join('');
+  $('#country-leg').innerHTML=d.map(x=>`<span><i class="sw" style="--c:${x[2]}"></i>${x[0]} ${x[1]}명</span>`).join('')})();
+/* resume mock */
+const skill={office:['일정 관리와 보고 자동화에 AI 도구 활용','사무 보조'],design:['AI 이미지 도구와 시각적 아이디어 개발 활용','그래픽 디자이너'],swe:['AI 디버깅과 언어모델 API 활용','소프트웨어 엔지니어']};
+const credTxt={self:'이력서에 직접 기재 (자기보고)',li:'LinkedIn Learning 인증',uni:'대학 발급 마이크로크리덴셜',corp:'기술기업 발급 인증'};
+let job='office',cond='self';
+function drawResumes(){const [sk,jt]=skill[job];
+  const b=cond==='none'?`<span class="tag none">AI 역량 표기 없음</span>`:`<span class="tag">AI 역량</span><span>${sk}</span><span>표기 방식: ${credTxt[cond]}</span>`;
+  $('#resumes').innerHTML=`<div class="resume"><b>지원자 A · ${jt}</b><span>직무 관련 경력과 학력 서술</span><span class="tag none">AI 역량 표기 없음</span></div><div class="resume"><b>지원자 B · ${jt}</b><span>직무 관련 경력과 학력 서술</span>${b}</div>`}
+seg('seg-job',v=>{job=v;drawResumes()});seg('seg-cond',v=>{cond=v;drawResumes()});
+/* probability dot plot */
+const prob={
+ all:{rows:[{l:'대학 발급 인증',pts:[{v:.61,t:'직무 합산, 대학 인증 조건: 예측 선택 확률 약 0.61'}]},{l:'기술기업 발급 인증',pts:[{v:.62,t:'직무 합산, 기업 인증 조건: 예측 선택 확률 약 0.62'}]}],
+  note:'자기보고나 LinkedIn 인증과의 신뢰구간이 상당 부분 겹칩니다. 인증 조건의 점추정치가 높다는 사실만으로 모든 인증이 자기보고보다 확실히 우월하다고 말할 수 없습니다.'},
+ swe:{rows:[{l:'자기보고',pts:[{v:.60,t:'소프트웨어 엔지니어, 자기보고: 약 0.60'}]},{l:'LinkedIn Learning 인증',pts:[{v:.71,t:'소프트웨어 엔지니어, LinkedIn 인증: 약 0.71'}]}],
+  note:'직무별 차이가 큽니다. 8~15퍼센트포인트라는 요약을 모든 직무와 표기 방식에 공통으로 적용할 수 없습니다.'},
+ office:{rows:[{l:'AI 역량 표기 조건들',range:[.55,.60],show:'≈0.55–0.60',t:'사무 보조: 조건에 따라 대략 0.55~0.60'}],
+  note:'표기 방식별 개별 값은 글에서 범위로만 제시되어 범위로 표시했습니다.'},
+ design:{rows:[{l:'자기보고',pts:[{v:.50,t:'그래픽 디자이너, 자기보고: 0.50 부근'}]}],
+  note:'그래픽 디자인에서는 효과가 약합니다. 자기보고 조건이 기준선 부근입니다.'}
+};
+seg('seg-prob',k=>{const m=prob[k];dotplot($('#dp'),$('#dp-axis'),m.rows,.4,.8,[.4,.5,.6,.7,.8],.5);$('#dp-note').textContent=m.note});
+/* pp vs relative */
+seg('seg-pp',k=>{
+  const rows=k==='pp'?[{l:'+8%p 가정',v:58,show:'58%',t:'50% + 8퍼센트포인트 = 58%'},{l:'+15%p 가정',v:65,show:'65%',t:'50% + 15퍼센트포인트 = 65%'}]
+                     :[{l:'+8% 가정',v:54,show:'54%',c:P2,t:'50% × 1.08 = 54%'},{l:'+15% 가정',v:57.5,show:'57.5%',c:P2,t:'50% × 1.15 = 57.5%'}];
+  bars($('#pp-bars'),rows,80,v=>v);
+  $('#pp-note').textContent=k==='pp'?'논문의 해석입니다. 상대적인 8~15% 증가나 임금 상승률이 아닙니다. 위 값은 단순 계산 예시이며 직무별 결과와는 다릅니다.':'같은 숫자를 상대 증가율로 읽으면 결과가 훨씬 작아 보입니다. 이 해석은 논문의 요약과 맞지 않습니다.'});
+/* disadvantage panel */
+const dis={
+ age:`<h3>약 60세 vs 약 32세 지원자</h3><p><span class="pill neutral">AI 표기 없음</span> 나이 많은 지원자의 예측 선택 확률은 동등 기준 0.50보다 낮습니다.</p><p><span class="pill good">일부 AI 인증</span> 확률이 0.50 부근으로 올라갑니다.</p><p class="note">설정된 경쟁 상대와 이력서 조건 안에서 불리함이 완화될 수 있다는 뜻입니다. 실제 연령 차별이 사라졌다는 증거는 아닙니다.</p>`,
+ edu:`<h3>낮은 학력의 사무 보조 지원자</h3><p><span class="pill good">대학 발급 인증</span> 유리한 패턴이 특히 두드러집니다.</p><p class="note">대상과 직무를 특정한 결과입니다. 모든 직무에서 학위가 필요 없다거나 모든 학생에게 같은 인증을 제공해야 한다는 결론으로 확대할 수 없습니다.</p>`
+};
+seg('seg-dis',v=>{$('#dis-panel').innerHTML=dis[v]});
+bars($('#free'),[{l:'긍정적 반응',v:49.0,c:P1,show:'49.0%',t:'그래픽 디자인 자유응답: 긍정적 반응 49.0%'},{l:'부정적 반응',v:43.8,c:P2,show:'43.8%',t:'그래픽 디자인 자유응답: 부정적 반응 43.8%'}],60,v=>v);
+const read={
+ yes:`<ul><li>가상 비교 안에서 AI 역량 정보가 면접 대상 선택에 영향을 줄 수 있다는 증거</li><li>직무와 표기 방식에 따라 효과가 크게 다름</li><li>불리한 조건이 없을 때는 표기 자체의 가치가 크고, 발급 기관 간 차이는 작거나 불확실함</li></ul>`,
+ no:`<ul><li>AI 교육을 받은 사람의 실제 능력이나 취업 성과 (교육의 취업 수익률)</li><li>전체 노동 수요나 신규 채용 자리의 증감</li><li>현실의 절대 면접 확률. 두 명 중 한 명을 고르는 강제 선택이라 0.50이 면접을 볼 확률 절반을 뜻하지 않음</li><li>무경력 대학 졸업생에 대한 효과 (젊은 지원자는 약 32세, 직무 경력 있음)</li><li>채용 담당자 AI 교육의 인과효과</li></ul>`
+};
+seg('seg-read',v=>{$('#read-panel').innerHTML=read[v]});
+
+</script>
